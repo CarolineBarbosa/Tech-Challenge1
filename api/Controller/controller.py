@@ -1,7 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 import Service.Scraper as scraper
+from utils.auth_util import get_current_user
 
-router = APIRouter()
+
+router = APIRouter(
+    dependencies=[Depends(get_current_user)]  # Aplica a validação JWT em todas as rotas
+)
+
+
 
 @router.get("/Produção", tags=["Produção"])
 async def get_producao():
