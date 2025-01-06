@@ -14,4 +14,4 @@ Instalar bibliotecas necessárias:
 
 ## Banco de Dados
 
-Recomenda-se o uso da extensão SQLite do `alexcvzz` para visualizar as tabelas to banco.
+Recomenda-se o uso da extensão do VSCode SQLite do `alexcvzz` para visualizar as tabelas to banco.
