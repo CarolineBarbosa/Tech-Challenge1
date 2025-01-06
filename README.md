@@ -12,3 +12,6 @@ Instalar bibliotecas necessárias:
 
 `pip install -r requirements.txt`
 
+## Banco de Dados
+
+Recomenda-se o uso da extensão SQLite do `alexcvzz` para visualizar as tabelas to banco.
