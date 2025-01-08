@@ -1,8 +1,12 @@
+import pandas as pd
 from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from passlib.context import CryptContext
+from database.db_connector import *
+from Service import service
+import Entidades.models as model
 
 # Configurações do JWT
 SECRET_KEY = "sua-chave-secreta"
@@ -16,23 +20,28 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 # Usuário fake
-fake_users_db = {
-    "FiapUser": {
-        "username": "FiapUser",
-        "hashed_password": pwd_context.hash("FIAP123"),
-    }
-}
+"""
+    username: FiapUser
+    hashed_password: FIAP123
+"""
 
 # Verificar senha
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+def hash_password(password: str):
+    return pwd_context.hash(password)
+
 # Função para autenticar o usuário
 def authenticate_user(username: str, password: str):
-    user = fake_users_db.get(username)
-    if not user:
+    user = service.autenticar_usuario(username, password)
+
+    #db_connector.DatabaseManager.read_to_dataframe
+    #db_connector.
+    #user = fake_users_db.get(username)
+    if user.empty:
         return False
-    if not verify_password(password, user["hashed_password"]):
+    if not verify_password(password, user.iloc[0]["Hashed_password"]):
         return False
     return user
 
@@ -59,3 +68,15 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido ou expirado",
         )
+def cadastro(username: str, password: str) -> bool:
+    data_user ={
+        "User": [username],
+        "Hashed_password": [hash_password(password)]
+    }
+    data_user = pd.DataFrame(data_user)
+    db_manager = DatabaseManager()
+    filters = [(model.Access.User == username)]
+    if not db_manager.read_to_dataframe(model.Access, filters).empty:
+        return False
+    db_manager.insert_from_dataframe(model.Access, data_user)
+    return True
