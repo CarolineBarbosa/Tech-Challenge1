@@ -2,9 +2,10 @@
 from typing import Optional
 from database.db_connector import *
 from sqlalchemy import and_
-from Service import scraper
+from Service import Scraper
 import Entidades.models as model
 from utils import auth_util
+
 
 def insert_dados(palavra: str):
     # exemplo de dados
@@ -46,7 +47,12 @@ def insert_dados_comercializacao(opcao: str, ano: int):
     print(db_manager.execute_select("select * from Comercializacao"))
 
 def insert_dados_exportacao(opcao: str, ano: int, subopt: int, subop: str) -> str:
-    dados = model.scraper.scraper_dados(opcao, ano, subopt, subop)
+    if ano is None:
+        for a in range(1970, 2024): 
+            dados = model.scraper.scraper_dados(opcao, a, subopt, subop)
+    else:
+        dados = model.scraper.scraper_dados(opcao, ano, subopt, subop)
+
     data_exportacao = pd.DataFrame(dados)
     db_manager = DatabaseManager()
     filters = [and_(model.Exportacao.Ano == ano, model.Exportacao.Tipos == subop)]
@@ -55,7 +61,7 @@ def insert_dados_exportacao(opcao: str, ano: int, subopt: int, subop: str) -> st
         return "Dados inseridos com sucessor."
     else:
         return "Já existem dados para esse ano e opção selecionada."
-    
+
 def insert_dados_importacao(opcao: str, ano: int, subopt: int, subop: str) -> str:
     dados = scraper.scraper_dados(opcao, ano, subopt, subop)
     data_importacao = pd.DataFrame(dados)
