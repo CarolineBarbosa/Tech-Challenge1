@@ -1,0 +1,5 @@
+CREATE TABLE Access (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    User VARCHAR(300),
+    Hashed_password INT
+);
