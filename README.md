@@ -5,3 +5,5 @@ fastapi
 uvicorn
 requests
 beautifulsoup4
+
+<img width="904" alt="diagrama_api" src="https://github.com/user-attachments/assets/0cd50e81-ac3e-47cb-9dcc-6ba35291f0dc" />
