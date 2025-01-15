@@ -2,7 +2,7 @@
 from typing import Optional
 from database.db_connector import *
 from sqlalchemy import and_
-from Service import Scraper
+from Service import scraper
 import Entidades.models as model
 from utils import auth_util
 
@@ -72,7 +72,18 @@ def insert_dados_importacao(opcao: str, ano: int, subopt: int, subop: str) -> st
         return "Dados inseridos com sucessor."
     else:
         return "Já existem dados para esse ano e opção selecionada."
-    
+
+def get_inserter(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
+    if ano is None:
+        df_full = []
+        for year in reversed(range(1970, 2024)):
+            df_full.append(insert_dados_processamento(opcao, year, subopt, subop))
+        return df_full
+    else:
+        return insert_dados_processamento(opcao, ano, subopt, subop)
+
+
+
 def insert_dados_processamento(opcao: str, ano: int, subopt: int, subop: str) -> str:
     dados = scraper.scraper_dados(opcao, ano, subopt, subop)
     data_importacao = pd.DataFrame(dados)

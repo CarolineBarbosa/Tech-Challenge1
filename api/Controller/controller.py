@@ -4,7 +4,6 @@ from utils.auth_util import get_current_user
 from typing import Optional
 
 
-
 router = APIRouter(
     dependencies=[Depends(get_current_user)]  # Aplica a validação JWT em todas as rotas
 )
@@ -14,40 +13,45 @@ subImpExp = {"Vinhos de mesa": "01", "Espumantes": "02", "Uvas frescas": "03" , 
 
 @router.get("/Produção", tags=["Produção"])
 async def get_producao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))])):
-    return scraper.scraper_dados("02", ano)
+    return scraper.get_scraper("02", ano)
+
+@router.post("/Produção", tags=["Produção"])
+async def get_processamento(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))])):
+    return service.get_inserter("02", ano)
 
 @router.get("/Processamento", tags=["Processamento"])
 async def get_processamento(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))]), subopt: Optional[str] = Query(None, enum=["Viníferas", "Americanas e híbridas", "Uvas de mesa", "Sem classificação"])):
-    return scraper.scraper_dados("03", ano, subOptProces.get(subopt), subopt)
+    return scraper.get_scraper("03", ano, subOptProces.get(subopt), subopt)
 
 @router.post("/Processamento", tags=["Processamento"])
 async def get_processamento(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))]), subopt: Optional[str] = Query(None, enum=["Viníferas", "Americanas e híbridas", "Uvas de mesa", "Sem classificação"])):
-    return service.insert_dados_processamento("03", ano, subOptProces.get(subopt), subopt)
+    return service.get_inserter("03", ano, subOptProces.get(subopt), subopt)
 
 @router.get("/Comercialização", tags=["Comercialização"])
 async def get_comercializacao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))])):
-    return scraper.scraper_dados("04", ano)
+    return scraper.get_scraper("04", ano)
 
 @router.post("/ComercializaçãoInserir", tags=["Comercialização"])
 async def get_comercializacao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))])):
-    return service.insert_dados_comercializacao("04", ano)
+    return service.get_inserter("04", ano)
 
 @router.get("/Importação", tags=["Importação"])
 async def get_importacao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))]), subopt: Optional[str] = Query(None, enum=["Vinhos de mesa", "Espumantes", "Uvas frescas", "Uvas passas", "Suco de uva"])):
-    return scraper.scraper_dados("05", ano, subImpExp.get(subopt))
+    return scraper.get_scraper("05", ano, subImpExp.get(subopt))
 
 @router.post("/ImportaçãoInserir", tags=["Importação"])
 async def get_importacao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))]), subopt: Optional[str] = Query(None, enum=["Vinhos de mesa", "Espumantes", "Uvas frescas", "Uvas passas", "Suco de uva"])):
-    return service.insert_dados_importacao("05",ano, subImpExp.get(subopt), subopt)
+    return service.get_inserter("05",ano, subImpExp.get(subopt), subopt)
 
 @router.get("/Exportação", tags=["Exportação"])
 async def get_exportacao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))]), subopt: Optional[str] = Query(None, enum=["Vinhos de mesa", "Espumantes", "Uvas frescas", "Uvas passas", "Suco de uva"])):
-    return scraper.scraper_dados("06", ano, subImpExp.get(subopt), subopt)
+    return scraper.get_scraper("06", ano, subImpExp.get(subopt), subopt)
 
 @router.post("/ExportaçãoInserir", tags=["Exportação"])
 async def get_exportacao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))]), subopt: Optional[str] = Query(None, enum=["Vinhos de mesa", "Espumantes", "Uvas frescas", "Uvas passas", "Suco de uva"])):
-    return service.insert_dados_exportacao("06",ano, subImpExp.get(subopt), subopt)
+    return service.get_inserter("06",ano, subImpExp.get(subopt), subopt)
+
 
 @router.post("/Teste", tags=["Teste"])
 async def get_exportacao():
-    return service.insert_dados("07")
+    return service.get_inserter("07")

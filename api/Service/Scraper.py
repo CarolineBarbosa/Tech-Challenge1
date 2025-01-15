@@ -29,6 +29,16 @@ def get_data_from_db():
         data = file.read()
     return data
 
+def get_scraper(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
+    if ano is None:
+        df_full = []
+        for year in reversed(range(1970, 2024)):
+            df_full.append(scraper_dados(opcao, year, subopt, subop))
+        return df_full
+    else:
+        return scraper_dados(opcao, ano, subopt, subop)
+
+
 #Faz o scraping dos dados de produção, processamento e comercialização do site da Embrapa.
 def scraper_dados(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
     
