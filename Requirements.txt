@@ -1,8 +1,8 @@
-pip install fastapi
-pip install uvicorn
-pip install pandas
-pip install sqlalchemy
-pip install requests
-pip install beautifulsoup4
-pip install python-jose
-pip install python-multipart
+fastapi
+uvicorn
+pandas
+sqlalchemy
+requests
+beautifulsoup4
+python-jose
+python-multipart
