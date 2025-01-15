@@ -47,12 +47,8 @@ def insert_dados_comercializacao(opcao: str, ano: int):
     print(db_manager.execute_select("select * from Comercializacao"))
 
 def insert_dados_exportacao(opcao: str, ano: int, subopt: int, subop: str) -> str:
-    if ano is None:
-        for a in range(1970, 2024): 
-            dados = model.scraper.scraper_dados(opcao, a, subopt, subop)
-    else:
-        dados = model.scraper.scraper_dados(opcao, ano, subopt, subop)
 
+    dados = model.scraper.scraper_dados(opcao, ano, subopt, subop)
     data_exportacao = pd.DataFrame(dados)
     db_manager = DatabaseManager()
     filters = [and_(model.Exportacao.Ano == ano, model.Exportacao.Tipos == subop)]

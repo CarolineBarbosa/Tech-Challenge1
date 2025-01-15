@@ -18,16 +18,10 @@ def processa_request(url, max_tentativa_acesso = 2000):
       print("Acesso OK para url na iteração nº", i)
       i = max_tentativa_acesso + 1
     except:
-      print("Erro listar_subsegmento")
-      data = get_data_from_db()
+    #   print("Erro listar_subsegmento")
       i += 1
   return data
 
-# Função para obter dados do banco de dados
-def get_data_from_db():
-    with open('Scripts/InsertBackupComercio.sql', 'r') as file:
-        data = file.read()
-    return data
 
 def get_scraper(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
     if ano is None:
