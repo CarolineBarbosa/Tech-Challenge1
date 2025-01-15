@@ -22,6 +22,7 @@ def processa_request(url, max_tentativa_acesso = 2000):
       i += 1
   return data
 
+
 #Faz o scraping dos dados de produção, processamento e comercialização do site da Embrapa.
 def scraper_dados(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
     

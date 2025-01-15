@@ -1,0 +1,12 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "api": "run.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      { "api": "/(.*)", "dest": "main.py" }
+    ]
+}
