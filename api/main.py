@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from api.Controller import controller, auth
-from api.utils import auth_util
+from Controller import controller, auth
+from utils import auth_util
 
 app = FastAPI()
 
