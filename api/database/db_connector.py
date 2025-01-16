@@ -84,6 +84,27 @@ class DatabaseManager:
         
         finally:
             session.close()
+
+    def read_from_database(self, query: str) -> pd.DataFrame:
+        """
+        Executa uma consulta SQL no banco de dados e retorna os resultados como um DataFrame do Pandas.
+
+        Parâmetros:
+            query (str): Consulta SQL a ser executada.
+
+        Retorna:
+            DataFrame: DataFrame do Pandas contendo os resultados da consulta.
+        """
+        with self.engine.connect() as connection:
+            try:
+                result = connection.execute(text(query))
+                df = pd.DataFrame(result.fetchall(), columns=result.keys())
+                return df
+            except Exception as e:
+                print(f"Erro ao executar consulta: {e}")
+                return pd.DataFrame()
+
+
     def execute_script(self, script: str):
     #Executa um script SQL diretamente no banco de dados. Parâmetros: script (str): Script SQL a ser executado.
         with self.engine.connect() as connection:
