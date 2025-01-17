@@ -5,7 +5,7 @@ from typing import Optional
 
 
 router = APIRouter(
-    dependencies=[Depends(get_current_user)]  # Aplica a validação JWT em todas as rotas
+     dependencies=[Depends(get_current_user)]  # Aplica a validação JWT em todas as rotas
 )
 
 subOptProces = {"Viníferas": "01", "Americanas e híbridas": "02", "Uvas de mesa": "03" , "Sem classificação": "04"}
@@ -16,7 +16,7 @@ async def get_producao(ano : int = Query(None,enum= [year for year in reversed(r
     return scraper.get_scraper("02", ano)
 
 @router.post("/Produção", tags=["Produção"])
-async def get_processamento(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))])):
+async def get_producao(ano : int = Query(None,enum= [year for year in reversed(range(1970, 2024))])):
     return service.get_inserter("02", ano)
 
 @router.get("/Processamento", tags=["Processamento"])

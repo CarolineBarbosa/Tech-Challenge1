@@ -31,39 +31,8 @@ def get_scraper(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1
     data = processa_request(url)
     print(data)
     if data is None:        # se o request falhar em todas as tentativas, resgatamos os dados do backup
-        print("AAA")
-        db_manager = DatabaseManager()
-        table_name = get_table_name(opcao) 
-        columns, fixed_columns = get_columns(opcao, ano)
-        query = f"SELECT {columns} FROM  {table_name}"
-        backup_data= db_manager.read_from_database(query)
-        print(backup_data)
-        # backup_data.pivot_table(index = 'Produto', columns = 'Ano', values = 'Quantidade')
-        if (opcao == "02" or opcao == "04" or opcao =='03'):
-            df_long = backup_data.melt(id_vars=fixed_columns, var_name="Ano", value_name="Quantidade")
-        elif (opcao == "05" or opcao == "06"):
-            # Reshape for Quantidade
-            quantidade_cols = [col for col in backup_data.columns if "Quantidade" in col]
-            quantidade_long = backup_data.melt(id_vars='País', value_vars=quantidade_cols, 
-                                    var_name="Ano", value_name="Quantidade")
 
-            # Extract year from column names
-            quantidade_long["Ano"] = quantidade_long["Ano"].str.extract(r"(\d{4})")
-
-            # Reshape for Valor
-            valor_cols = [col for col in backup_data.columns if "Valor" in col]
-            valor_long = backup_data.melt(id_vars='País', value_vars=valor_cols, 
-                                var_name="Ano", value_name="Valor")
-
-            # Extract year from column names
-            valor_long["Ano"] = valor_long["Ano"].str.extract(r"(\d{4})")
-
-            # Merge the two DataFrames on Produto and Ano
-            df_long = pd.merge(quantidade_long, valor_long, on=['País', "Ano"])
-
-
-        data = display_data(df_long, opcao)
-        return data
+        return handle_backup_data(opcao, ano)
     else:
         if ano is None:
             df_full = []
@@ -116,3 +85,28 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
             })
     
     return data
+
+def handle_backup_data(opcao, ano):
+    db_manager = DatabaseManager()
+    table_name = get_table_name(opcao) 
+    columns, fixed_columns = get_columns(opcao, ano)
+    query = f"SELECT {columns} FROM  {table_name}"
+    backup_data = db_manager.read_from_database(query)
+    
+    if opcao in ["02", "03", "04"]:
+        backup_data.columns = [col.lower() for col in backup_data.columns]
+        df_long = backup_data.melt(id_vars=fixed_columns, var_name="Ano", value_name="Quantidade")
+    elif opcao in ["05", "06"]:
+        quantidade_cols = [col for col in backup_data.columns if "Quantidade" in col]
+        quantidade_long = backup_data.melt(id_vars='País', value_vars=quantidade_cols, 
+                                            var_name="Ano", value_name="Quantidade")
+        quantidade_long["Ano"] = quantidade_long["Ano"].str.extract(r"(\d{4})")
+        
+        valor_cols = [col for col in backup_data.columns if "Valor" in col]
+        valor_long = backup_data.melt(id_vars='País', value_vars=valor_cols, 
+                                        var_name="Ano", value_name="Valor")
+        valor_long["Ano"] = valor_long["Ano"].str.extract(r"(\d{4})")
+        
+        df_long = pd.merge(quantidade_long, valor_long, on=['País', "Ano"])
+    
+    return display_data(df_long, opcao)

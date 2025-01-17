@@ -31,11 +31,11 @@ def get_columns(opcao, ano):
     elif(opcao == "05" or opcao == "06"):
         fixed_columns= ['País']
         if ano is None:
-            varied_columns = [f'{year}Quantidade' for year in range(1970, 2024)]
-            varied_columns2 = [f'{year}Valor' for year in range(1970, 2024)]
+            varied_columns = [f'`{year}Quantidade`' for year in range(1970, 2024)]
+            varied_columns2 = [f'`{year}Valor`' for year in range(1970, 2024)]
             
         else:
-            varied_columns =[ f"{ano}Quantidade",f"{ano}Valor" ]
+            varied_columns =[ f"`{ano}Quantidade`",f"`{ano}Valor`" ]
         return (",".join(fixed_columns + varied_columns)), [x.lower() for x in fixed_columns]
 
 def display_data(df, opcao):
