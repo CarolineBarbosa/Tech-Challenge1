@@ -1,3 +1,4 @@
+import pandas as pd
 def get_table_name(opcao):
     if(opcao == "02"):
         table_name = 'BackupProducao'
@@ -45,23 +46,24 @@ def display_data(df, opcao):
         for row in range(len(df)):
             data.append({
                 "Produto": df.loc[row, 'produto'],
-                "Quantidade": int(df.loc[row, 'Quantidade']),  # Convert to native Python int
-                "Ano": int(df.loc[row, 'Ano'])  # Convert to native Python int
+                "Quantidade":  int(df.loc[row, 'Quantidade'] if pd.notna(df.loc[row, 'Quantidade']) else 0),  # Convert to native Python int
+                "Ano": int(df.loc[row, 'Ano'] if pd.notna(df.loc[row, 'Ano']) else 0)   # Convert to native Python int
             })
     elif opcao == "03":
         # Iterar sobre as linhas da tabela (exceto cabeçalhos)
         for row in range(len(df)):
             data.append({
                 "Cultivar": df.loc[row, 'cultivar'],
-                "Quantidade_Kg": int(df.loc[row, 'Quantidade']),  # Convert to native Python int
-                "Ano": int(df.loc[row, 'Ano'])  # Convert to native Python int
+                "Quantidade_Kg":  int(df.loc[row, 'Quantidade'] if pd.notna(df.loc[row, 'Quantidade']) else 0),  # Convert to native Python int
+                "Ano": int(df.loc[row, 'Ano'] if pd.notna(df.loc[row, 'Ano']) else 0)   # Convert to native Python int
             })
     elif opcao == "05" or opcao == "06":
         # Iterar sobre as linhas da tabela (exceto cabeçalhos)
         for row in range(len(df)):
             data.append({
                 "País": df.loc[row, "País"],
-                "Quantidade_Kg": int(df.loc[row, 'Quantidade']),  # Convert to native Python int
-                "Ano": int(df.loc[row, 'Ano'])  # Convert to native Python int
+                "Quantidade_Kg": int(df.loc[row, 'Quantidade'] if pd.notna(df.loc[row, 'Quantidade']) else 0), # Convert to native Python int
+                "Valor": int(df.loc[row, 'Valor'] if pd.notna(df.loc[row, 'Valor']) else 0),  # Convert to native Python int
+                "Ano":int(df.loc[row, 'Ano'] if pd.notna(df.loc[row, 'Ano']) else 0)  # Convert to native Python int
             })
     return data

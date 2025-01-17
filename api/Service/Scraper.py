@@ -27,17 +27,16 @@ def processa_request(url, max_tentativa_acesso = 2000):
 
 
 def get_scraper(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
-    url = "" #f"http://vitibrasil.cnpuv.embrapa.br/index.php?ano={ano}&opcao=opt_{opcao}&subopcao=subopt_{subopt}"
+    url = f"http://vitibrasil.cnpuv.embrapa.br/index.php?ano={ano}&opcao=opt_{opcao}&subopcao=subopt_{subopt}"
     data = processa_request(url)
-    print(data)
     if data is None:        # se o request falhar em todas as tentativas, resgatamos os dados do backup
 
-        return handle_backup_data(opcao, ano)
+        return handle_backup_data(opcao, ano, subopt)
     else:
         if ano is None:
             df_full = []
             for year in reversed(range(1970, 2024)):
-                df_full.append(scraper_dados(data, opcao, year, subopt, subop))
+                df_full.append(scraper_dados(data, opcao, year, subop))
             return df_full
         else:
             return scraper_dados(opcao, ano, subopt, subop)
@@ -86,7 +85,7 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
     
     return data
 
-def handle_backup_data(opcao, ano):
+def handle_backup_data(opcao, ano, subopt=None):
     db_manager = DatabaseManager()
     table_name = get_table_name(opcao) 
     columns, fixed_columns = get_columns(opcao, ano)
@@ -96,6 +95,7 @@ def handle_backup_data(opcao, ano):
     if opcao in ["02", "03", "04"]:
         backup_data.columns = [col.lower() for col in backup_data.columns]
         df_long = backup_data.melt(id_vars=fixed_columns, var_name="Ano", value_name="Quantidade")
+    
     elif opcao in ["05", "06"]:
         quantidade_cols = [col for col in backup_data.columns if "Quantidade" in col]
         quantidade_long = backup_data.melt(id_vars='País', value_vars=quantidade_cols, 
@@ -108,5 +108,10 @@ def handle_backup_data(opcao, ano):
         valor_long["Ano"] = valor_long["Ano"].str.extract(r"(\d{4})")
         
         df_long = pd.merge(quantidade_long, valor_long, on=['País', "Ano"])
-    
-    return display_data(df_long, opcao)
+    print(subopt)
+    if opcao in ['03', '05', '06'] and subopt !="01" :
+        print('entrou')
+        return "Erro ao conectar no site da Embrapa! Dados de backup não disponíveis para a subopção selecionada"
+    else:
+        print(df_long)
+        return display_data(df_long, opcao)
