@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pandas
+sqlalchemy
+requests
+beautifulsoup4
+python-jose
+python-multipart
+passlib
