@@ -4,9 +4,9 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from passlib.context import CryptContext
-from database.db_connector import *
-from Service import service
-import Entidades.models as model
+from api.database.db_connector import *
+from api.Service import service
+import api.Entidades.models as model
 
 # Configurações do JWT
 SECRET_KEY = "sua-chave-secreta"

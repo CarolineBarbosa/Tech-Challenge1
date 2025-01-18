@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine, Column, Integer, String, Float, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from typing import Optional
-from Entidades.models import Base
+from api.Entidades.models import Base
 
 
 class DatabaseManager:

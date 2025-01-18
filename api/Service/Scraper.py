@@ -1,10 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from typing import Optional
-from database.db_connector import *
+from api.database.db_connector import *
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from Entidades.render_backup import get_table_name,get_columns,display_data
+from api.Entidades.render_backup import get_table_name,get_columns,display_data
 
 # Função para acessar a url com limite de tentativa pré definido de 200
 
@@ -39,7 +39,7 @@ def get_scraper(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1
                 df_full.append(scraper_dados(data, opcao, year, subop))
             return df_full
         else:
-            return scraper_dados(opcao, ano, subopt, subop)
+            return scraper_dados(data, opcao, ano, subopt, subop)
 
 
 #Faz o scraping dos dados de produção, processamento e comercialização do site da Embrapa.
@@ -58,7 +58,7 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
             cols = row.find_all("td")
             data.append({
                 "Produto": cols[0].text.strip(),
-                "Quantidade": None if (cols[1].text.strip() == "-") else (int(cols[1].text.strip().replace(".", ""))), # Converter para número
+                "Quantidade": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (int(cols[1].text.strip().replace(".", ""))), # Converter para número
                 "Ano": ano
             })
     elif(opcao =="03"):
@@ -67,7 +67,7 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
             cols = row.find_all("td")
             data.append({
                 "Cultivar": cols[0].text.strip(),
-                "Quantidade_Kg": None if (cols[1].text.strip() == "-") else (int(cols[1].text.strip().replace(".", ""))), # Converter para número
+                "Quantidade_Kg": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (int(cols[1].text.strip().replace(".", ""))), # Converter para número
                 "Classificacao": subop,
                 "Ano": ano
             })
@@ -77,8 +77,8 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
             cols = row.find_all("td")
             data.append({
                 "País": cols[0].text.strip(),
-                "Quantidade_Kg": None if (cols[1].text.strip() == "-") else (int(cols[1].text.strip().replace(".", ""))),
-                "Valor": None if (cols[2].text.strip() == "-") else (int(cols[2].text.strip().replace(".", ""))),
+                "Quantidade_Kg": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (int(cols[1].text.strip().replace(".", ""))),
+                "Valor": None if (cols[2].text.strip() == "-" or cols[1].text.strip() == "nd") else (int(cols[2].text.strip().replace(".", ""))),
                 "Tipos": subop,
                 "Ano": ano
             })

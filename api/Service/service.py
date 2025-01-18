@@ -1,10 +1,10 @@
 
 from typing import Optional
-from database.db_connector import *
+from api.database.db_connector import *
 from sqlalchemy import and_
-from Service import scraper
-import Entidades.models as model
-from utils import auth_util
+from api.Service import scraper
+import api.Entidades.models as model
+from api.utils import auth_util
 
 
 def insert_dados(palavra: str):
@@ -37,18 +37,57 @@ def insert_dados(palavra: str):
 
     print(db_manager.execute_select("select * from quantidade"))
 
-#Faz o scraping dos dados de produção, processamento e comercialização do site da Embrapa.
-def insert_dados_comercializacao(opcao: str, ano: int):
-    dados = scraper.scraper_dados(opcao, ano)
-    db_manager = DatabaseManager()
-    data_comercializacao = pd.DataFrame(dados)
 
-    db_manager.insert_from_dataframe(model.Comercializacao, data_comercializacao)
-    print(db_manager.execute_select("select * from Comercializacao"))
+def insert_producao(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
+    if ano is None:
+        df_full = []
+        for year in reversed(range(1970, 2024)):
+            df_full.append(insert_dados_producao(opcao, year, subopt, subop))
+        return df_full
+    else:
+        return insert_dados_producao(opcao, ano, subopt, subop)
+    
+def insert_comercializacao(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
+    if ano is None:
+        df_full = []
+        for year in reversed(range(1970, 2024)):
+            df_full.append(insert_dados_comercializacao(opcao, year, subopt, subop))
+        return df_full
+    else:
+        return insert_dados_comercializacao(opcao, ano, subopt, subop)
+    
+def insert_processamento(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
+    if ano is None:
+        df_full = []
+        for year in reversed(range(1970, 2024)):
+            df_full.append(insert_dados_processamento(opcao, year, subopt, subop))
+        return df_full
+    else:
+        return insert_dados_processamento(opcao, ano, subopt, subop)
+    
+    
+def insert_exportacao(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
+    if ano is None:
+        df_full = []
+        for year in reversed(range(1970, 2024)):
+            df_full.append(insert_dados_exportacao(opcao, year, subopt, subop))
+        return df_full
+    else:
+        return insert_dados_exportacao(opcao, ano, subopt, subop)
+    
+def insert_importacao(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
+    if ano is None:
+        df_full = []
+        for year in reversed(range(1970, 2024)):
+            df_full.append(insert_dados_importacao(opcao, year, subopt, subop))
+        return df_full
+    else:
+        return insert_dados_importacao(opcao, ano, subopt, subop)
+
 
 def insert_dados_exportacao(opcao: str, ano: int, subopt: int, subop: str) -> str:
 
-    dados = model.scraper.scraper_dados(opcao, ano, subopt, subop)
+    dados = scraper.get_scraper(opcao, ano, subopt, subop)
     data_exportacao = pd.DataFrame(dados)
     db_manager = DatabaseManager()
     filters = [and_(model.Exportacao.Ano == ano, model.Exportacao.Tipos == subop)]
@@ -59,7 +98,7 @@ def insert_dados_exportacao(opcao: str, ano: int, subopt: int, subop: str) -> st
         return "Já existem dados para esse ano e opção selecionada."
 
 def insert_dados_importacao(opcao: str, ano: int, subopt: int, subop: str) -> str:
-    dados = scraper.scraper_dados(opcao, ano, subopt, subop)
+    dados = scraper.get_scraper(opcao, ano, subopt, subop)
     data_importacao = pd.DataFrame(dados)
     db_manager = DatabaseManager()
     filters = [and_(model.Importacao.Ano == ano, model.Importacao.Tipos == subop)]
@@ -68,20 +107,31 @@ def insert_dados_importacao(opcao: str, ano: int, subopt: int, subop: str) -> st
         return "Dados inseridos com sucessor."
     else:
         return "Já existem dados para esse ano e opção selecionada."
-
-def get_inserter(opcao: str, ano: Optional[str] = None ,subopt: Optional[str] = 1, subop: Optional[str] = None):
-    if ano is None:
-        df_full = []
-        for year in reversed(range(1970, 2024)):
-            df_full.append(insert_dados_processamento(opcao, year, subopt, subop))
-        return df_full
+    
+def insert_dados_producao(opcao: str, ano: int, subopt: int, subop: str) -> str:
+    dados = scraper.get_scraper(opcao, ano, subopt, subop)
+    data_importacao = pd.DataFrame(dados)
+    db_manager = DatabaseManager()
+    filters = [model.Producao.Ano == ano]
+    if db_manager.read_to_dataframe(model.Producao, filters).empty:
+        db_manager.insert_from_dataframe(model.Producao, data_importacao)
+        return "Dados inseridos com sucessor."
     else:
-        return insert_dados_processamento(opcao, ano, subopt, subop)
+        return "Já existem dados para esse ano."
 
-
-
+def insert_dados_comercializacao(opcao: str, ano: int, subopt: int, subop: str) -> str:
+    dados = scraper.get_scraper(opcao, ano, subopt, subop)
+    data_importacao = pd.DataFrame(dados)
+    db_manager = DatabaseManager()
+    filters = [model.Comercializacao.Ano == ano]
+    if db_manager.read_to_dataframe(model.Comercializacao, filters).empty:
+        db_manager.insert_from_dataframe(model.Comercializacao, data_importacao)
+        return "Dados inseridos com sucessor."
+    else:
+        return "Já existem dados para esse ano."
+    
 def insert_dados_processamento(opcao: str, ano: int, subopt: int, subop: str) -> str:
-    dados = scraper.scraper_dados(opcao, ano, subopt, subop)
+    dados = scraper.get_scraper(opcao, ano, subopt, subop)
     data_importacao = pd.DataFrame(dados)
     db_manager = DatabaseManager()
     filters = [and_(model.Processamento.Ano == ano, model.Processamento.Classificacao == subop)]

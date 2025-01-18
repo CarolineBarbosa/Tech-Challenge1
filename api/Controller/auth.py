@@ -1,7 +1,7 @@
 from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from utils.auth_util import cadastro, authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from api.utils.auth_util import cadastro, authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter()
 

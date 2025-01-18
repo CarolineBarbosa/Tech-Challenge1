@@ -10,6 +10,22 @@ class Access(Base):
     User = Column(String, nullable=False)
     Hashed_password = Column(String, nullable=False)
 
+class Producao(Base):
+    """
+    Representa a tabela 'Producai' no banco de dados.
+
+    Atributos:
+        id (Integer): Chave primária da tabela.
+        produto (String): Nome do produto.
+        Quantidade_Litros (Integer): Quantidade do produto.
+        Ano (Integer): Ano relacionado aos produtos.
+    """
+    __tablename__ = 'Producao'
+    id = Column(Integer, primary_key=True)
+    Produto = Column(String)
+    Quantidade = Column(Integer)
+    Ano = Column(Integer)
+
 class Quantidade(Base):
     """
     Representa a tabela 'quantidade' no banco de dados.
