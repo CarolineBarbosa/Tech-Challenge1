@@ -93,7 +93,7 @@ def insert_dados_exportacao(opcao: str, ano: int, subopt: int, subop: str) -> st
     filters = [and_(model.Exportacao.Ano == ano, model.Exportacao.Tipos == subop)]
     if db_manager.read_to_dataframe(model.Exportacao, filters).empty:
         db_manager.insert_from_dataframe(model.Exportacao, data_exportacao)
-        return "Dados inseridos com sucessor."
+        return "Dados inseridos com sucesso."
     else:
         return "Já existem dados para esse ano e opção selecionada."
 
@@ -104,7 +104,7 @@ def insert_dados_importacao(opcao: str, ano: int, subopt: int, subop: str) -> st
     filters = [and_(model.Importacao.Ano == ano, model.Importacao.Tipos == subop)]
     if db_manager.read_to_dataframe(model.Importacao, filters).empty:
         db_manager.insert_from_dataframe(model.Importacao, data_importacao)
-        return "Dados inseridos com sucessor."
+        return "Dados inseridos com sucesso."
     else:
         return "Já existem dados para esse ano e opção selecionada."
     
@@ -115,7 +115,7 @@ def insert_dados_producao(opcao: str, ano: int, subopt: int, subop: str) -> str:
     filters = [model.Producao.Ano == ano]
     if db_manager.read_to_dataframe(model.Producao, filters).empty:
         db_manager.insert_from_dataframe(model.Producao, data_importacao)
-        return "Dados inseridos com sucessor."
+        return "Dados inseridos com sucesso."
     else:
         return "Já existem dados para esse ano."
 
@@ -126,7 +126,7 @@ def insert_dados_comercializacao(opcao: str, ano: int, subopt: int, subop: str) 
     filters = [model.Comercializacao.Ano == ano]
     if db_manager.read_to_dataframe(model.Comercializacao, filters).empty:
         db_manager.insert_from_dataframe(model.Comercializacao, data_importacao)
-        return "Dados inseridos com sucessor."
+        return "Dados inseridos com sucesso."
     else:
         return "Já existem dados para esse ano."
     
@@ -137,7 +137,7 @@ def insert_dados_processamento(opcao: str, ano: int, subopt: int, subop: str) ->
     filters = [and_(model.Processamento.Ano == ano, model.Processamento.Classificacao == subop)]
     if db_manager.read_to_dataframe(model.Processamento, filters).empty:
         db_manager.insert_from_dataframe(model.Processamento, data_importacao)
-        return "Dados inseridos com sucessor."
+        return "Dados inseridos com sucesso."
     else:
         return "Já existem dados para esse ano e opção selecionada."
         
