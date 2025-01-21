@@ -3,7 +3,6 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from typing import Optional
 from api.Entidades.models import Base
-import psycopg2
 from dotenv import load_dotenv
 import os
 
