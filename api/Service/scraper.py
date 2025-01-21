@@ -58,7 +58,7 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
             cols = row.find_all("td")
             data.append({
                 "Produto": cols[0].text.strip(),
-                "Quantidade": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[1].text.strip()), # Converter para número
+                "Quantidade": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[1].text.strip().replace(".", "")), # Converter para número
                 "Ano": ano
             })
     elif(opcao =="03"):
@@ -67,7 +67,7 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
             cols = row.find_all("td")
             data.append({
                 "Cultivar": cols[0].text.strip(),
-                "Quantidade_Kg": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[1].text.strip()), # Converter para número
+                "Quantidade_Kg": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[1].text.strip().replace(".", "")), # Converter para número
                 "Classificacao": subop,
                 "Ano": ano
             })
@@ -77,8 +77,8 @@ def scraper_dados(data, opcao: str, ano: Optional[str] = None ,subopt: Optional[
             cols = row.find_all("td")
             data.append({
                 "País": cols[0].text.strip(),
-                "Quantidade_Kg": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[1].text.strip()),
-                "Valor": None if (cols[2].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[2].text.strip()),
+                "Quantidade_Kg": None if (cols[1].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[1].text.strip().replace(".", "")),
+                "Valor": None if (cols[2].text.strip() == "-" or cols[1].text.strip() == "nd") else (cols[2].text.strip().replace(".", "")),
                 "Tipos": subop,
                 "Ano": ano
             })
