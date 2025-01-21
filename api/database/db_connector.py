@@ -4,6 +4,11 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from typing import Optional
 from api.Entidades.models import Base
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 class DatabaseManager:
     """
@@ -18,14 +23,14 @@ class DatabaseManager:
         read_to_dataframe(table_class, filters): Lê dados do banco e os retorna
             como um DataFrame do Pandas.
     """
-    def __init__(self, db_url: Optional[str] = "sqlite:///tech_challenge.db"):
+    def __init__(self, db_url: Optional[str] = None):
         """
         Inicializa o DatabaseManager com a URL do banco de dados.
 
         Parâmetros:
             db_url (str): URL de conexão com o banco de dados.
         """
-        self.engine = create_engine(db_url)
+        self.engine = create_engine(db_url or os.getenv('DATABASE_URL'))
         self.Session = sessionmaker(bind=self.engine)
 
     def create_tables(self):
